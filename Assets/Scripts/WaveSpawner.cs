@@ -5,7 +5,7 @@ public class WaveSpawner : MonoBehaviour
 {
     public GameObject bugPrefab;
     public Transform spawnPoint;
-    public float timeBetweenWaves = 5f;
+    public float timeBetweenWaves = 10f;
     public int bugsPerWave = 3;
 
     private int waveNumber = 0;
@@ -29,13 +29,11 @@ public class WaveSpawner : MonoBehaviour
                 GameManager.instance.UpdateWave(waveNumber);
             Debug.Log("Wave " + waveNumber + " starting!");
 
-            // Show educational message every 2 waves (waves 1, 3, 5...)
-            if (waveNumber % 2 == 1)
-            {
+            // Show educational message
                 WaveMessage waveMsg = FindObjectOfType<WaveMessage>();
                 if (waveMsg != null)
                     yield return StartCoroutine(waveMsg.ShowWaveMessage(waveNumber));
-            }
+
 
             // Spawn bugs for this wave
             yield return StartCoroutine(SpawnBugs());

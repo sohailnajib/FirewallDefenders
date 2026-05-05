@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +15,10 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI healthText;
     public GameObject gameOverPanel;
     public Slider firewallHPBar;
+    private GameSceneAudio gameAudio;
     
+    // ADD THIS - Reference to GameOverGlitch script
+    public GameOverGlitch gameOverGlitch;
 
     private bool isGameOver = false;
 
@@ -25,6 +27,13 @@ public class GameManager : MonoBehaviour
         // Singleton pattern - as taught in slides
         if (instance == null)
             instance = this;
+
+        gameAudio = FindObjectOfType<GameSceneAudio>();
+        if (gameAudio == null)
+        {
+            GameObject audioObj = new GameObject("GameSceneAudio");
+            gameAudio = audioObj.AddComponent<GameSceneAudio>();
+        }
     }
 
     void Update()
@@ -46,6 +55,7 @@ public class GameManager : MonoBehaviour
     public void UpdateWave(int wave)
     {
         waveNumber = wave;
+
     }
 
     public void UpdateHealth(int current, int max)
@@ -61,9 +71,21 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        // Show game over panel
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(true);
+        if (gameAudio != null)
+        {
+            gameAudio.TriggerGameOver();
+        }
+            
+        if (gameOverGlitch != null)
+        {
+            gameOverGlitch.TriggerGameOver(score);
+        }
+        else
+        {
+            // Fallback if no glitch script assigned
+            if (gameOverPanel != null)
+                gameOverPanel.SetActive(true);
+        }
 
         // Stop time
         Time.timeScale = 0f;

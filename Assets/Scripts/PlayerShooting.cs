@@ -12,6 +12,7 @@ public class PlayerShooting : MonoBehaviour
     private Animator animator;
     private ShootingEffect shootingEffect;
     private LineRenderer lineRenderer;
+    private GameSceneAudio gameAudio;  // ADD THIS
 
     void Start()
     {
@@ -27,6 +28,17 @@ public class PlayerShooting : MonoBehaviour
         lineRenderer.startColor = Color.yellow;
         lineRenderer.endColor = new Color(1f, 1f, 0f, 0f);
         lineRenderer.enabled = false;
+        
+        // FIND THE AUDIO MANAGER - ADD THIS
+        gameAudio = FindObjectOfType<GameSceneAudio>();
+        if (gameAudio == null)
+        {
+            Debug.LogWarning("GameSceneAudio not found in scene! Bullet sounds will not play.");
+        }
+        else
+        {
+            Debug.Log("GameSceneAudio found for bullet sounds!");
+        }
     }
 
     void Update()
@@ -68,6 +80,12 @@ public class PlayerShooting : MonoBehaviour
 
         if (shootingEffect != null)
             shootingEffect.PlayMuzzleFlash();
+        
+        // PLAY BULLET SOUND - ADD THIS
+        if (gameAudio != null)
+        {
+            gameAudio.PlayBulletSound();
+        }
     }
 
     IEnumerator DrawTracer(Vector3 start, Vector3 end)

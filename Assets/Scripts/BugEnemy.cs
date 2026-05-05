@@ -105,7 +105,12 @@ public class BugEnemy : MonoBehaviour
             animator.SetTrigger("TakeDamage");
 
         if (health <= 0)
+        {
+            if (GameManager.instance != null)
+                GameManager.instance.AddScore(10);
             Die();
+        }
+            
     }
 
     void Die()
@@ -120,8 +125,7 @@ public class BugEnemy : MonoBehaviour
         if (animator != null)
             animator.SetBool("Death", true);
 
-        if (GameManager.instance != null)
-            GameManager.instance.AddScore(10);
+
 
         Destroy(gameObject, 2f);
     }
