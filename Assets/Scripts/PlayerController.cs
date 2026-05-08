@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     private CharacterController charController;
     private Animator animator;
     private float verticalVelocity = 0f;
-    private bool isAiming = false;
 
     void Awake()
     {
@@ -20,11 +19,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        HandleAiming();
+        HandleAiming();  
         HandleMovement();
         HandleAnimations();
 
-        // Allow cursor unlock during play for debugging
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -36,19 +34,16 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            isAiming = true;
             if (animator != null) animator.SetBool("Aiming", true);
         }
         if (Input.GetMouseButtonUp(1))
         {
-            isAiming = false;
             if (animator != null) animator.SetBool("Aiming", false);
         }
     }
 
     void HandleMovement()
     {
-        // Apply gravity, allow jumping when grounded
         if (charController.isGrounded)
         {
             verticalVelocity = -1f;

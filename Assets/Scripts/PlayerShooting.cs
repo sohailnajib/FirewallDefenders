@@ -42,7 +42,6 @@ public class PlayerShooting : MonoBehaviour
 
     void Shoot()
     {
-        // Cast a ray from the centre of the screen forward
         Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
@@ -80,7 +79,6 @@ public class PlayerShooting : MonoBehaviour
         lineRenderer.enabled = false;
     }
 
-    // Draw a simple crosshair in the centre of the screen
     void OnGUI()
     {
         float cx = Screen.width / 2;

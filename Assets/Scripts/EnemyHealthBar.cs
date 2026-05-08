@@ -13,7 +13,6 @@ public class EnemyHealthBar : MonoBehaviour
 
     void Update()
     {
-        // Keep the health bar facing the camera at all times
         transform.LookAt(transform.position + cam.forward);
     }
 

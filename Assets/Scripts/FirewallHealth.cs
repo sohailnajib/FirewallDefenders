@@ -14,6 +14,10 @@ public class FirewallHealth : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        HealthBarVisual healthBar = FindObjectOfType<HealthBarVisual>();
+        if (healthBar != null)
+            healthBar.FlashOnDamage();
+
         UpdateHealthUI();
 
         if (currentHealth <= 0)

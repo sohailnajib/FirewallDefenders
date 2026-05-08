@@ -22,7 +22,6 @@ public class GameSceneAudio : MonoBehaviour
 
     void Start()
     {
-        // Separate AudioSource for music so bullet sounds don't interrupt it
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.loop = true;
         musicSource.volume = musicVolume;
@@ -34,7 +33,6 @@ public class GameSceneAudio : MonoBehaviour
             musicSource.Play();
         }
 
-        // Dedicated source for bullet sounds
         bulletSource = gameObject.AddComponent<AudioSource>();
         bulletSource.loop = false;
         bulletSource.volume = bulletVolume;
@@ -46,7 +44,6 @@ public class GameSceneAudio : MonoBehaviour
         if (isGameOver || bulletFireSound == null || bulletSource == null)
             return;
 
-        // Randomise pitch slightly for variety
         bulletSource.pitch = Random.Range(bulletPitchMin, bulletPitchMax);
         bulletSource.PlayOneShot(bulletFireSound, bulletVolume);
     }

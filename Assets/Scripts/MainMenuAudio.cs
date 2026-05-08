@@ -14,7 +14,6 @@ public class MainMenuAudio : MonoBehaviour
 
     void Awake()
     {
-        // Keep this object alive when loading the game scene, then destroy it after fade out
         if (instance == null)
         {
             instance = this;

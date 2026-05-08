@@ -21,11 +21,9 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        // Only one GameManager should exist at a time
         if (instance == null)
             instance = this;
 
-        // Find or create the audio manager
         gameAudio = FindObjectOfType<GameSceneAudio>();
         if (gameAudio == null)
         {

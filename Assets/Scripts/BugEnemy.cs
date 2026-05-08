@@ -48,7 +48,6 @@ public class BugEnemy : MonoBehaviour
 
     void MoveTowardFirewall()
     {
-        // Keep Y position fixed so the bug doesn't float or sink
         Vector3 targetPos = new Vector3(firewall.position.x,
             transform.position.y, firewall.position.z);
 
@@ -64,7 +63,6 @@ public class BugEnemy : MonoBehaviour
 
     void AttackFirewall()
     {
-        // Only attack once per bug
         if (hasAttacked) return;
         hasAttacked = true;
 

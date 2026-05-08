@@ -353,14 +353,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameOverGlitch
   gameOverPanel: {fileID: 309653374}
   gameOverTitleText: {fileID: 703714361}
-  finalScoreText: {fileID: 0}
   restartButton: {fileID: 295144191}
   restartButtonText: {fileID: 744384408}
-  restartButtonImage: {fileID: 0}
   exitButton: {fileID: 494861108}
   exitButtonText: {fileID: 476748318}
-  exitButtonImage: {fileID: 0}
-  panelBackground: {fileID: 0}
   glitchColor1: {r: 1, g: 0, b: 0, a: 1}
   glitchColor2: {r: 1, g: 0, b: 0.5, a: 1}
   finalColor: {r: 1, g: 0.2, b: 0.2, a: 1}
@@ -1199,7 +1195,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Wave 0
+  m_text: 'Wave: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dd6eac3e231f91448aae718975ed7833, type: 2}
   m_sharedMaterial: {fileID: 5949685063902918285, guid: dd6eac3e231f91448aae718975ed7833, type: 2}
@@ -2262,7 +2258,6 @@ MonoBehaviour:
   descriptionText: {fileID: 1397006369}
   skipButton: {fileID: 1273473044}
   panelBackground: {fileID: 0}
-  glitchOverlay: {fileID: 0}
   darkBackgroundPanel: {fileID: 0}
   fadeInDuration: 0.5
   glitchDuration: 0.3
@@ -2273,7 +2268,6 @@ MonoBehaviour:
   borderColor: {r: 0, g: 1, b: 0.8, a: 0.5}
   borderWidth: 2
   glitchIntensity: 0.1
-  glitchSpeed: 20
   buttonSize: {x: 200, y: 50}
   buttonHoverSize: {x: 250, y: 55}
   buttonFontSize: 28
@@ -2282,7 +2276,6 @@ MonoBehaviour:
   buttonHoverColor: {r: 1, g: 1, b: 1, a: 1}
   buttonNormalText: SKIP
   buttonHoverText: SKIP NOW
-  fullScreenPanel: 1
 --- !u!114 &935929530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2491,10 +2484,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneAudio
   waveMusic: {fileID: 8300000, guid: 6ce590c13a7dce844bcd71eda1390471, type: 3}
+  musicVolume: 0.3
   gameOverMusic: {fileID: 8300000, guid: cf161954a9597e649b4779091389b462, type: 3}
   bulletFireSound: {fileID: 8300000, guid: db441a76fcd95f646b827f0c12898845, type: 3}
-  musicVolume: 0.3
-  sfxVolume: 1
+  bulletVolume: 1
+  bulletPitchMin: 0.8
+  bulletPitchMax: 1.2
 --- !u!4 &1024880630
 Transform:
   m_ObjectHideFlags: 0
@@ -4428,6 +4423,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1941637644}
   timeBetweenWaves: 5
   bugsPerWave: 3
+  maxBugsPerWave: 20
 --- !u!4 &1941637644
 Transform:
   m_ObjectHideFlags: 0

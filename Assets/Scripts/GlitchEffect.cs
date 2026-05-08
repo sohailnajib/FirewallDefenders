@@ -20,20 +20,15 @@ public class GlitchEffects : MonoBehaviour
     public float bgGlitchDuration = 2f;
     public float textGlitchDuration = 1.5f;
     public float buttonGlitchDuration = 1f;
-
-    private Vector3 originalBgScale;
     private Vector2 originalBgPos;
     private Color originalBgColor;
     private string[] originalTexts;
     private Color[] originalTextColors;
-    private Vector2[] originalTextPositions;
-    private Vector2 originalButtonPos;
 
     void Start()
     {
         if (backgroundImage != null)
         {
-            originalBgScale = backgroundImage.rectTransform.localScale;
             originalBgPos = backgroundImage.rectTransform.anchoredPosition;
             originalBgColor = backgroundImage.color;
         }
@@ -42,7 +37,6 @@ public class GlitchEffects : MonoBehaviour
         {
             originalTexts = new string[glitchTexts.Length];
             originalTextColors = new Color[glitchTexts.Length];
-            originalTextPositions = new Vector2[glitchTexts.Length];
 
             for (int i = 0; i < glitchTexts.Length; i++)
             {
@@ -50,7 +44,6 @@ public class GlitchEffects : MonoBehaviour
                 {
                     originalTexts[i] = glitchTexts[i].text;
                     originalTextColors[i] = glitchTexts[i].color;
-                    originalTextPositions[i] = glitchTexts[i].rectTransform.anchoredPosition;
                     glitchTexts[i].alpha = 0f;
                 }
             }
@@ -58,8 +51,6 @@ public class GlitchEffects : MonoBehaviour
 
         if (startButton != null)
         {
-            originalButtonPos = startButton.GetComponent<RectTransform>().anchoredPosition;
-
             CanvasGroup buttonCanvasGroup = startButton.GetComponent<CanvasGroup>();
             if (buttonCanvasGroup == null)
                 buttonCanvasGroup = startButton.gameObject.AddComponent<CanvasGroup>();
@@ -181,7 +172,6 @@ public class GlitchEffects : MonoBehaviour
             yield return new WaitForSeconds(0.08f);
         }
 
-        // Restore all text to final state
         for (int i = 0; i < glitchTexts.Length; i++)
         {
             if (glitchTexts[i] != null && originalTexts != null && i < originalTexts.Length)
@@ -241,7 +231,6 @@ public class GlitchEffects : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
-        // Finalise button to fully visible state
         if (buttonImage != null)
             buttonImage.color = new Color(1, 1, 1, 1f);
 
@@ -259,8 +248,6 @@ public class GlitchEffects : MonoBehaviour
             buttonCanvasGroup.blocksRaycasts = true;
         }
 
-        if (startButton != null)
-            startButton.GetComponent<RectTransform>().anchoredPosition = originalButtonPos;
     }
 
     string GetRandomGlitchText(string original)

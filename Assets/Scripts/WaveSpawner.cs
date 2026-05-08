@@ -7,6 +7,7 @@ public class WaveSpawner : MonoBehaviour
     public Transform spawnPoint;
     public float timeBetweenWaves = 10f;
     public int bugsPerWave = 3;
+    public int maxBugsPerWave = 20;  
 
     private int waveNumber = 0;
 
@@ -26,15 +27,13 @@ public class WaveSpawner : MonoBehaviour
             if (GameManager.instance != null)
                 GameManager.instance.UpdateWave(waveNumber);
 
-            // Show the educational message before each wave starts
             WaveMessage waveMsg = FindObjectOfType<WaveMessage>();
             if (waveMsg != null)
                 yield return StartCoroutine(waveMsg.ShowWaveMessage(waveNumber));
 
             yield return StartCoroutine(SpawnBugs());
 
-            // Make it harder each wave
-            bugsPerWave++;
+            bugsPerWave = Mathf.Min(bugsPerWave + 1, maxBugsPerWave);
 
             yield return new WaitForSeconds(timeBetweenWaves);
         }
@@ -44,7 +43,6 @@ public class WaveSpawner : MonoBehaviour
     {
         for (int i = 0; i < bugsPerWave; i++)
         {
-            // Randomise spawn position slightly so bugs don't all stack
             Vector3 spawnPos = spawnPoint.position +
                 new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-2f, 2f));
 

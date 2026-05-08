@@ -8,17 +8,12 @@ public class GameOverGlitch : MonoBehaviour
     [Header("Game Over Panel")]
     public GameObject gameOverPanel;
     public TMP_Text gameOverTitleText;
-    public TMP_Text finalScoreText;
 
     [Header("Buttons")]
     public Button restartButton;
     public TMP_Text restartButtonText;
-    public Image restartButtonImage;
     public Button exitButton;
     public TMP_Text exitButtonText;
-    public Image exitButtonImage;
-
-    public Image panelBackground;
 
     [Header("Glitch Settings")]
     public Color glitchColor1 = Color.red;
@@ -91,22 +86,15 @@ public class GameOverGlitch : MonoBehaviour
 
     void HideButtons()
     {
-        SetButtonVisible(restartButton, restartButtonImage, restartButtonText, false);
-        SetButtonVisible(exitButton, exitButtonImage, exitButtonText, false);
+        SetButtonVisible(restartButton, restartButtonText, false);
+        SetButtonVisible(exitButton, exitButtonText, false);
     }
 
-    void SetButtonVisible(Button button, Image buttonImage, TMP_Text buttonText, bool visible)
+    void SetButtonVisible(Button button, TMP_Text buttonText, bool visible)
     {
         if (button == null) return;
 
         button.interactable = visible;
-
-        if (buttonImage != null)
-        {
-            Color c = buttonImage.color;
-            c.a = visible ? 1f : 0f;
-            buttonImage.color = c;
-        }
 
         if (buttonText != null)
             buttonText.alpha = visible ? 1f : 0f;
@@ -119,8 +107,6 @@ public class GameOverGlitch : MonoBehaviour
         if (isGlitching) return;
         isGlitching = true;
 
-        if (finalScoreText != null)
-            finalScoreText.text = "Final Score: " + finalScore;
 
         if (gameOverPanel != null)
         {
@@ -133,12 +119,6 @@ public class GameOverGlitch : MonoBehaviour
     {
         float elapsed = 0;
 
-        if (panelBackground != null)
-        {
-            panelBackground.color = Color.white;
-            yield return new WaitForSecondsRealtime(0.1f);
-            panelBackground.color = new Color(0.05f, 0.05f, 0.1f, 0.95f);
-        }
 
         while (elapsed < glitchDuration)
         {
@@ -174,24 +154,10 @@ public class GameOverGlitch : MonoBehaviour
                 gameOverTitleText.text = originalTitleText;
             }
 
-            if (finalScoreText != null && intensity > 0.5f)
-            {
-                finalScoreText.color = new Color(
-                    Random.Range(0.8f, 1f),
-                    Random.Range(0f, 0.5f),
-                    Random.Range(0f, 0.5f)
-                );
-            }
-            else if (finalScoreText != null)
-            {
-                finalScoreText.color = Color.white;
-            }
-
             elapsed += 0.05f;
             yield return new WaitForSecondsRealtime(0.05f);
         }
 
-        // Settle into final state
         if (gameOverTitleText != null)
         {
             gameOverTitleText.rectTransform.anchoredPosition = originalTitlePos;
@@ -199,9 +165,6 @@ public class GameOverGlitch : MonoBehaviour
             gameOverTitleText.color = finalColor;
             gameOverTitleText.fontSize = 72;
         }
-
-        if (finalScoreText != null)
-            finalScoreText.color = new Color(1f, 0.5f, 0.5f);
 
         yield return new WaitForSecondsRealtime(buttonDelay);
 
@@ -221,15 +184,15 @@ public class GameOverGlitch : MonoBehaviour
             float intensity = Random.Range(0f, 1f);
             float t = elapsed / buttonGlitchDuration;
 
-            AnimateButtonGlitch(restartButton, restartButtonImage, restartButtonText, intensity, t, originalRestartScale, originalRestartPos);
-            AnimateButtonGlitch(exitButton, exitButtonImage, exitButtonText, intensity, t, originalExitScale, originalExitPos);
+            AnimateButtonGlitch(restartButton, restartButtonText, intensity, t, originalRestartScale, originalRestartPos);
+            AnimateButtonGlitch(exitButton, exitButtonText, intensity, t, originalExitScale, originalExitPos);
 
             elapsed += 0.05f;
             yield return new WaitForSecondsRealtime(0.05f);
         }
 
-        FinalizeButton(restartButton, restartButtonImage, restartButtonText, originalRestartText, originalRestartScale, originalRestartPos, originalRestartFontSize);
-        FinalizeButton(exitButton, exitButtonImage, exitButtonText, originalExitText, originalExitScale, originalExitPos, originalExitFontSize);
+        FinalizeButton(restartButton, restartButtonText, originalRestartText, originalRestartScale, originalRestartPos, originalRestartFontSize);
+        FinalizeButton(exitButton, exitButtonText, originalExitText, originalExitScale, originalExitPos, originalExitFontSize);
 
         if (restartButton != null) restartButton.interactable = true;
         if (exitButton != null) exitButton.interactable = true;
@@ -238,7 +201,7 @@ public class GameOverGlitch : MonoBehaviour
         if (exitButton != null) StartCoroutine(PulseButton(exitButton, exitButtonText));
     }
 
-    void AnimateButtonGlitch(Button button, Image buttonImage, TMP_Text buttonText, float intensity, float t, Vector3 originalScale, Vector2 originalPos)
+    void AnimateButtonGlitch(Button button, TMP_Text buttonText, float intensity, float t, Vector3 originalScale, Vector2 originalPos)
     {
         if (button == null) return;
 
@@ -251,16 +214,6 @@ public class GameOverGlitch : MonoBehaviour
                 buttonRect.anchoredPosition = new Vector2(
                     originalPos.x + Random.Range(-8f, 8f),
                     originalPos.y + Random.Range(-4f, 4f)
-                );
-            }
-
-            if (buttonImage != null)
-            {
-                buttonImage.color = new Color(
-                    Random.Range(0.8f, 1f),
-                    Random.Range(0f, 0.3f),
-                    Random.Range(0f, 0.3f),
-                    t
                 );
             }
 
@@ -294,17 +247,10 @@ public class GameOverGlitch : MonoBehaviour
 
             if (buttonText != null)
                 buttonText.alpha = t;
-
-            if (buttonImage != null)
-            {
-                Color c = buttonFinalColor;
-                c.a = t;
-                buttonImage.color = c;
-            }
         }
     }
 
-    void FinalizeButton(Button button, Image buttonImage, TMP_Text buttonText, string originalText, Vector3 originalScale, Vector2 originalPos, float originalFontSize)
+    void FinalizeButton(Button button, TMP_Text buttonText, string originalText, Vector3 originalScale, Vector2 originalPos, float originalFontSize)
     {
         if (button == null) return;
 
@@ -313,9 +259,6 @@ public class GameOverGlitch : MonoBehaviour
             buttonRect.anchoredPosition = originalPos;
 
         button.transform.localScale = originalScale;
-
-        if (buttonImage != null)
-            buttonImage.color = buttonFinalColor;
 
         if (buttonText != null)
         {

@@ -12,7 +12,6 @@ public class WaveMessage : MonoBehaviour
     public TextMeshProUGUI descriptionText;
     public Button skipButton;
     public Image panelBackground;
-    public Image glitchOverlay;
 
     [Header("Background Panel")]
     public Image darkBackgroundPanel;
@@ -43,8 +42,6 @@ public class WaveMessage : MonoBehaviour
     public Color buttonHoverColor = Color.white;
     public string buttonNormalText = "SKIP";
     public string buttonHoverText = "SKIP NOW";
-
-    public bool fullScreenPanel = true;
 
     private bool skipped = false;
     private Vector2 originalTitlePos;
@@ -84,17 +81,16 @@ public class WaveMessage : MonoBehaviour
             if (canvasGroup == null)
                 canvasGroup = messagePanel.AddComponent<CanvasGroup>();
 
-            if (fullScreenPanel)
+            
+            RectTransform panelRect = messagePanel.GetComponent<RectTransform>();
+            if (panelRect != null)
             {
-                RectTransform panelRect = messagePanel.GetComponent<RectTransform>();
-                if (panelRect != null)
-                {
-                    panelRect.anchorMin = Vector2.zero;
-                    panelRect.anchorMax = Vector2.one;
-                    panelRect.offsetMin = Vector2.zero;
-                    panelRect.offsetMax = Vector2.zero;
-                }
+                panelRect.anchorMin = Vector2.zero;
+                panelRect.anchorMax = Vector2.one;
+                panelRect.offsetMin = Vector2.zero;
+                panelRect.offsetMax = Vector2.zero;
             }
+            
         }
 
         SetupDarkBackground();
@@ -113,7 +109,6 @@ public class WaveMessage : MonoBehaviour
 
     void SetupDarkBackground()
     {
-        // Create a dark background panel automatically if one wasn't assigned
         if (darkBackgroundPanel == null && messagePanel != null)
         {
             GameObject bgObj = new GameObject("DarkBackground");
@@ -211,7 +206,6 @@ public class WaveMessage : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Auto-skip after 8 seconds if the player doesn't
         float autoSkipTime = 8f;
         float timer = 0;
 
@@ -219,7 +213,6 @@ public class WaveMessage : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            // Occasional random title glitch for atmosphere
             if (titleText != null && Random.Range(0f, 1f) < 0.05f)
                 StartCoroutine(TitleGlitch());
 

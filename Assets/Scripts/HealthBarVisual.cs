@@ -81,7 +81,6 @@ public class HealthBarVisual : MonoBehaviour
 
             targetColor.a = 0.7f + (pulseValue * pulseAlphaIntensity);
 
-            // Flash deep red when critically low
             if (healthPercent < 0.15f)
                 targetColor = Color.Lerp(Color.red, new Color(0.6f, 0f, 0f), pulseValue);
 
