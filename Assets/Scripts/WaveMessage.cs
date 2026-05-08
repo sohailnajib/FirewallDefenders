@@ -13,28 +13,27 @@ public class WaveMessage : MonoBehaviour
     public Button skipButton;
     public Image panelBackground;
     public Image glitchOverlay;
-    
-    [Header("Background Panel (Auto-created if not set)")]
-    public Image darkBackgroundPanel;  // Dark semi-transparent background
-    
+
+    [Header("Background Panel")]
+    public Image darkBackgroundPanel;
+
     [Header("Animation Settings")]
     public float fadeInDuration = 0.5f;
     public float glitchDuration = 0.3f;
     public float scalePunchDuration = 0.2f;
-    
+
     [Header("Colors")]
     public Color titleColor = new Color(0f, 0.8f, 1f);
     public Color descriptionColor = new Color(0.8f, 0.8f, 1f);
-    
+
     [Header("Dark Background Settings")]
     public Color backgroundColor = new Color(0.05f, 0.05f, 0.1f, 0.92f);
     public Color borderColor = new Color(0f, 1f, 0.8f, 0.5f);
     public float borderWidth = 2f;
-    
+
     [Header("Glitch Settings")]
     public float glitchIntensity = 0.1f;
-    public float glitchSpeed = 20f;
-    
+
     [Header("Skip Button Settings")]
     public Vector2 buttonSize = new Vector2(200f, 50f);
     public Vector2 buttonHoverSize = new Vector2(250f, 55f);
@@ -44,15 +43,14 @@ public class WaveMessage : MonoBehaviour
     public Color buttonHoverColor = Color.white;
     public string buttonNormalText = "SKIP";
     public string buttonHoverText = "SKIP NOW";
-    
-    [Header("Panel Positioning (Full Screen)")]
+
     public bool fullScreenPanel = true;
-    
+
     private bool skipped = false;
     private Vector2 originalTitlePos;
     private Vector2 originalDescPos;
     private CanvasGroup canvasGroup;
-    
+
     private string[] waveTitles = {
         "WAVE 1 — VIRUS DETECTED!",
         "WAVE 2 — DDoS ATTACK!",
@@ -61,32 +59,31 @@ public class WaveMessage : MonoBehaviour
         "WAVE 5 — RANSOMWARE ALERT!",
         "INCOMING THREAT!"
     };
-    
+
     private string[] waveDescriptions = {
         "<color=#FF4444>⚠ CRITICAL ALERT ⚠</color>\n\nViruses attach to programs and replicate,\ncorrupting data and slowing systems.\n\n<color=#00FFAA>▸ OBJECTIVE:</color> Destroy all viruses before\nthey reach and corrupt your Firewall!",
-        
+
         "<color=#FF8800>⚠ DDoS ATTACK DETECTED ⚠</color>\n\nDistributed Denial of Service floods your\nfirewall with fake requests to overwhelm it.\n\n<color=#00FFAA>▸ OBJECTIVE:</color> Eliminate the DDoS bots before\nthey crash your Firewall!",
-        
+
         "<color=#FF4444>⚠ WORM OUTBREAK ⚠</color>\n\nUnlike viruses, worms self-replicate across\nnetworks without needing a host program.\n\n<color=#00FFAA>▸ OBJECTIVE:</color> Stop the worms from spreading\nthrough your Firewall!",
-        
+
         "<color=#FF8800>⚠ TROJAN HORSE ⚠</color>\n\nMalware disguised as legitimate software\nthat opens backdoors for attackers.\n\n<color=#00FFAA>▸ OBJECTIVE:</color> Destroy the Trojans before\nthey breach your Firewall!",
-        
+
         "<color=#FF4444>⚠ RANSOMWARE ALERT ⚠</color>\n\nMalware that encrypts your data and\ndemands payment to restore access.\n\n<color=#00FFAA>▸ OBJECTIVE:</color> Eliminate all Ransomware before\nit encrypts your Firewall!",
-        
+
         "<color=#FF00FF>⚠ UNKNOWN THREAT ⚠</color>\n\nUnknown threat detected!\n\n<color=#00FFAA>▸ OBJECTIVE:</color> Destroy all threats before\nthey reach your Firewall!"
     };
-    
+
     void Start()
     {
         if (messagePanel != null)
         {
             messagePanel.SetActive(false);
-            
+
             canvasGroup = messagePanel.GetComponent<CanvasGroup>();
             if (canvasGroup == null)
                 canvasGroup = messagePanel.AddComponent<CanvasGroup>();
-            
-            // Make messagePanel full screen if enabled
+
             if (fullScreenPanel)
             {
                 RectTransform panelRect = messagePanel.GetComponent<RectTransform>();
@@ -99,158 +96,145 @@ public class WaveMessage : MonoBehaviour
                 }
             }
         }
-        
-        // Create or setup dark background panel
+
         SetupDarkBackground();
-        
+
         if (skipButton != null)
             skipButton.onClick.AddListener(SkipMessage);
-        
-        // Store original positions from YOUR manual setup in Hierarchy
+
         if (titleText != null)
-        {
             originalTitlePos = titleText.rectTransform.anchoredPosition;
-        }
-        
+
         if (descriptionText != null)
-        {
             originalDescPos = descriptionText.rectTransform.anchoredPosition;
-        }
-        
+
         StyleSkipButton();
     }
-    
+
     void SetupDarkBackground()
     {
-        // If no dark background panel is assigned, create one automatically
+        // Create a dark background panel automatically if one wasn't assigned
         if (darkBackgroundPanel == null && messagePanel != null)
         {
             GameObject bgObj = new GameObject("DarkBackground");
             bgObj.transform.SetParent(messagePanel.transform, false);
             bgObj.transform.SetAsFirstSibling();
-            
+
             darkBackgroundPanel = bgObj.AddComponent<Image>();
-            
+
             RectTransform rect = darkBackgroundPanel.rectTransform;
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
         }
-        
+
         if (darkBackgroundPanel != null)
         {
             darkBackgroundPanel.color = backgroundColor;
-            
+
             Outline outline = darkBackgroundPanel.GetComponent<Outline>();
             if (outline == null)
                 outline = darkBackgroundPanel.gameObject.AddComponent<Outline>();
-            
+
             outline.effectColor = borderColor;
             outline.effectDistance = new Vector2(borderWidth, borderWidth);
         }
     }
-    
+
     void StyleSkipButton()
     {
-        if (skipButton != null)
+        if (skipButton == null) return;
+
+        RectTransform buttonRect = skipButton.GetComponent<RectTransform>();
+        if (buttonRect != null)
+            buttonRect.sizeDelta = buttonSize;
+
+        Image btnImage = skipButton.GetComponent<Image>();
+        if (btnImage == null)
+            btnImage = skipButton.gameObject.AddComponent<Image>();
+
+        btnImage.color = buttonNormalColor;
+        btnImage.raycastTarget = true;
+
+        TextMeshProUGUI btnText = skipButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (btnText != null)
         {
-            // Set button size (position preserves your manual placement)
-            RectTransform buttonRect = skipButton.GetComponent<RectTransform>();
-            if (buttonRect != null)
-            {
-                buttonRect.sizeDelta = buttonSize;
-            }
-            
-            // Style background image
-            Image btnImage = skipButton.GetComponent<Image>();
-            if (btnImage == null)
-                btnImage = skipButton.gameObject.AddComponent<Image>();
-            
-            btnImage.color = buttonNormalColor;
-            btnImage.raycastTarget = true;
-            
-            // Style button text
-            TextMeshProUGUI btnText = skipButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (btnText != null)
-            {
-                btnText.text = buttonNormalText;
-                btnText.color = buttonHoverColor;
-                btnText.fontSize = buttonFontSize;
-                btnText.fontStyle = FontStyles.Bold;
-                btnText.alignment = TextAlignmentOptions.Center;
-            }
-            
-            // Add custom hover effect
-            SkipButtonHoverEffect hoverEffect = skipButton.GetComponent<SkipButtonHoverEffect>();
-            if (hoverEffect == null)
-                hoverEffect = skipButton.gameObject.AddComponent<SkipButtonHoverEffect>();
-            
-            hoverEffect.SetButtonData(buttonSize, buttonHoverSize, buttonFontSize, buttonHoverFontSize, 
-                                      buttonNormalColor, buttonHoverColor, buttonNormalText, buttonHoverText);
+            btnText.text = buttonNormalText;
+            btnText.color = buttonHoverColor;
+            btnText.fontSize = buttonFontSize;
+            btnText.fontStyle = FontStyles.Bold;
+            btnText.alignment = TextAlignmentOptions.Center;
         }
+
+        SkipButtonHoverEffect hoverEffect = skipButton.GetComponent<SkipButtonHoverEffect>();
+        if (hoverEffect == null)
+            hoverEffect = skipButton.gameObject.AddComponent<SkipButtonHoverEffect>();
+
+        hoverEffect.SetButtonData(buttonSize, buttonHoverSize, buttonFontSize, buttonHoverFontSize,
+                                  buttonNormalColor, buttonHoverColor, buttonNormalText, buttonHoverText);
     }
-    
+
     public void SkipMessage()
     {
         skipped = true;
     }
-    
+
     public IEnumerator ShowWaveMessage(int waveNumber)
     {
         skipped = false;
-        
+
         int index = Mathf.Clamp(waveNumber - 1, 0, waveTitles.Length - 1);
-        
+
         if (titleText != null)
         {
             titleText.text = waveTitles[index];
             titleText.color = titleColor;
             titleText.fontStyle = FontStyles.Bold;
         }
-        
+
         if (descriptionText != null)
         {
             descriptionText.text = waveDescriptions[index];
             descriptionText.color = descriptionColor;
         }
-        
+
         if (messagePanel != null)
         {
             messagePanel.SetActive(true);
             StartCoroutine(PanelPulseAnimation());
         }
-        
+
         StartCoroutine(GlitchEntrance());
         StartCoroutine(FadeInPanel());
-        
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
+
+        // Auto-skip after 8 seconds if the player doesn't
         float autoSkipTime = 8f;
         float timer = 0;
-        
+
         while (!skipped && timer < autoSkipTime)
         {
             timer += Time.deltaTime;
-            
+
+            // Occasional random title glitch for atmosphere
             if (titleText != null && Random.Range(0f, 1f) < 0.05f)
-            {
                 StartCoroutine(TitleGlitch());
-            }
-            
+
             yield return null;
         }
-        
+
         yield return StartCoroutine(FadeOutPanel());
-        
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
         if (messagePanel != null)
             messagePanel.SetActive(false);
     }
-    
+
     IEnumerator GlitchEntrance()
     {
         float elapsed = 0;
@@ -264,49 +248,49 @@ public class WaveMessage : MonoBehaviour
                     originalTitlePos.x + offsetX,
                     originalTitlePos.y + offsetY
                 );
-                
+
                 if (Random.Range(0f, 1f) < 0.3f)
                     titleText.color = new Color(Random.Range(0.5f, 1f), Random.Range(0f, 0.5f), Random.Range(0f, 0.5f));
                 else
                     titleText.color = titleColor;
             }
-            
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
         if (titleText != null)
         {
             titleText.rectTransform.anchoredPosition = originalTitlePos;
             titleText.color = titleColor;
         }
     }
-    
+
     IEnumerator TitleGlitch()
     {
         Vector2 originalPos = titleText.rectTransform.anchoredPosition;
         Color originalCol = titleText.color;
-        
+
         titleText.rectTransform.anchoredPosition = new Vector2(
             originalPos.x + Random.Range(-5f, 5f),
             originalPos.y + Random.Range(-2f, 2f)
         );
         titleText.color = Color.red;
-        
+
         yield return new WaitForSeconds(0.05f);
-        
+
         titleText.rectTransform.anchoredPosition = new Vector2(
             originalPos.x + Random.Range(-3f, 3f),
             originalPos.y + Random.Range(-1f, 1f)
         );
         titleText.color = Color.white;
-        
+
         yield return new WaitForSeconds(0.05f);
-        
+
         titleText.rectTransform.anchoredPosition = originalPos;
         titleText.color = originalCol;
     }
-    
+
     IEnumerator FadeInPanel()
     {
         if (canvasGroup != null)
@@ -322,7 +306,7 @@ public class WaveMessage : MonoBehaviour
             canvasGroup.alpha = 1;
         }
     }
-    
+
     IEnumerator FadeOutPanel()
     {
         if (canvasGroup != null)
@@ -337,7 +321,7 @@ public class WaveMessage : MonoBehaviour
             canvasGroup.alpha = 0;
         }
     }
-    
+
     IEnumerator PanelPulseAnimation()
     {
         if (panelBackground != null)
@@ -355,17 +339,7 @@ public class WaveMessage : MonoBehaviour
             panelBackground.rectTransform.localScale = originalScale;
         }
     }
-    
-    public void UpdateWaveNumber(int waveNumber)
-    {
-        if (titleText != null)
-        {
-            string glitchedTitle = waveTitles[Mathf.Clamp(waveNumber - 1, 0, waveTitles.Length - 1)];
-            titleText.text = glitchedTitle;
-        }
-    }
 }
-
 
 [System.Serializable]
 public class SkipButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -374,7 +348,7 @@ public class SkipButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPoint
     private TextMeshProUGUI buttonText;
     private Image buttonImage;
     private RectTransform buttonRect;
-    
+
     private Vector2 originalSize;
     private Vector2 hoverSize;
     private float originalFontSize;
@@ -383,8 +357,8 @@ public class SkipButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPoint
     private Color hoverColor;
     private string originalText;
     private string hoverText;
-    
-    public void SetButtonData(Vector2 origSize, Vector2 hoverSz, float origFont, float hoverFont, 
+
+    public void SetButtonData(Vector2 origSize, Vector2 hoverSz, float origFont, float hoverFont,
                               Color origColor, Color hoverCol, string origTxt, string hoverTxt)
     {
         originalSize = origSize;
@@ -396,18 +370,18 @@ public class SkipButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPoint
         originalText = origTxt;
         hoverText = hoverTxt;
     }
-    
+
     void Start()
     {
         button = GetComponent<Button>();
         buttonText = GetComponentInChildren<TextMeshProUGUI>();
         buttonImage = GetComponent<Image>();
         buttonRect = GetComponent<RectTransform>();
-        
+
         if (buttonRect != null)
             originalSize = buttonRect.sizeDelta;
     }
-    
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (button != null && button.interactable)
@@ -418,21 +392,21 @@ public class SkipButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPoint
                 buttonText.fontSize = hoverFontSize;
                 buttonText.color = hoverColor;
             }
-            
+
             if (buttonRect != null)
                 buttonRect.sizeDelta = hoverSize;
         }
     }
-    
+
     public void OnPointerExit(PointerEventData eventData)
     {
         if (buttonText != null)
         {
             buttonText.text = originalText;
             buttonText.fontSize = originalFontSize;
-            buttonText.color = hoverColor; // Keep the bright color for visibility
+            buttonText.color = hoverColor;
         }
-        
+
         if (buttonRect != null)
             buttonRect.sizeDelta = originalSize;
     }

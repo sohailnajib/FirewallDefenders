@@ -14,7 +14,6 @@ public class FirewallHealth : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        Debug.Log("Firewall HP: " + currentHealth);
         UpdateHealthUI();
 
         if (currentHealth <= 0)

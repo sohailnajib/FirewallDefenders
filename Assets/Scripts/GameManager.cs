@@ -9,25 +9,23 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public int waveNumber = 0;
 
-    // UI elements - we'll connect these in Inspector
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI waveText;
     public TextMeshProUGUI healthText;
     public GameObject gameOverPanel;
     public Slider firewallHPBar;
-    private GameSceneAudio gameAudio;
-    
-    // ADD THIS - Reference to GameOverGlitch script
     public GameOverGlitch gameOverGlitch;
 
+    private GameSceneAudio gameAudio;
     private bool isGameOver = false;
 
     void Awake()
     {
-        // Singleton pattern - as taught in slides
+        // Only one GameManager should exist at a time
         if (instance == null)
             instance = this;
 
+        // Find or create the audio manager
         gameAudio = FindObjectOfType<GameSceneAudio>();
         if (gameAudio == null)
         {
@@ -40,7 +38,6 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOver) return;
 
-        // Update UI every frame
         if (scoreText != null)
             scoreText.text = "Score: " + score;
         if (waveText != null)
@@ -55,7 +52,6 @@ public class GameManager : MonoBehaviour
     public void UpdateWave(int wave)
     {
         waveNumber = wave;
-
     }
 
     public void UpdateHealth(int current, int max)
@@ -72,28 +68,15 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
 
         if (gameAudio != null)
-        {
             gameAudio.TriggerGameOver();
-        }
-            
+
         if (gameOverGlitch != null)
-        {
             gameOverGlitch.TriggerGameOver(score);
-        }
-        else
-        {
-            // Fallback if no glitch script assigned
-            if (gameOverPanel != null)
-                gameOverPanel.SetActive(true);
-        }
+        else if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
 
-        // Stop time
         Time.timeScale = 0f;
-
-        // Unlock cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        Debug.Log("GAME OVER!");
     }
 }

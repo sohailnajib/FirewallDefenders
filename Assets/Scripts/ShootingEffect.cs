@@ -8,7 +8,6 @@ public class ShootingEffect : MonoBehaviour
 
     void Start()
     {
-        // Make sure light is off at start
         if (muzzleLight != null)
             muzzleLight.enabled = false;
     }
@@ -18,7 +17,6 @@ public class ShootingEffect : MonoBehaviour
         StartCoroutine(MuzzleFlash());
     }
 
-    // Coroutine for flash effect - as taught in slides
     IEnumerator MuzzleFlash()
     {
         if (muzzleLight != null)

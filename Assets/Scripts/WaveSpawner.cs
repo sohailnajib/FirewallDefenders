@@ -12,36 +12,30 @@ public class WaveSpawner : MonoBehaviour
 
     void Start()
     {
-        // Start spawning using coroutine - as taught in slides
         StartCoroutine(SpawnWaves());
     }
 
-    // Coroutine for wave spawning - as taught in slides
     IEnumerator SpawnWaves()
     {
-        // Wait before first wave
         yield return new WaitForSeconds(2f);
 
         while (true)
         {
             waveNumber++;
+
             if (GameManager.instance != null)
                 GameManager.instance.UpdateWave(waveNumber);
-            Debug.Log("Wave " + waveNumber + " starting!");
 
-            // Show educational message
-                WaveMessage waveMsg = FindObjectOfType<WaveMessage>();
-                if (waveMsg != null)
-                    yield return StartCoroutine(waveMsg.ShowWaveMessage(waveNumber));
+            // Show the educational message before each wave starts
+            WaveMessage waveMsg = FindObjectOfType<WaveMessage>();
+            if (waveMsg != null)
+                yield return StartCoroutine(waveMsg.ShowWaveMessage(waveNumber));
 
-
-            // Spawn bugs for this wave
             yield return StartCoroutine(SpawnBugs());
 
-            // Increase difficulty each wave
-            bugsPerWave += 1;
+            // Make it harder each wave
+            bugsPerWave++;
 
-            // Wait before next wave
             yield return new WaitForSeconds(timeBetweenWaves);
         }
     }
@@ -50,14 +44,12 @@ public class WaveSpawner : MonoBehaviour
     {
         for (int i = 0; i < bugsPerWave; i++)
         {
-            // Spawn bug at spawn point with random offset
-            Vector3 spawnPos = spawnPoint.position + 
+            // Randomise spawn position slightly so bugs don't all stack
+            Vector3 spawnPos = spawnPoint.position +
                 new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-2f, 2f));
-            
-            // Instantiate the bug prefab - as taught in slides
+
             Instantiate(bugPrefab, spawnPos, Quaternion.identity);
 
-            // Wait between each bug spawn
             yield return new WaitForSeconds(0.8f);
         }
     }

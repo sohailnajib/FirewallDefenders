@@ -27,12 +27,12 @@ public class CameraLook : MonoBehaviour
     {
         if (axes == RotationAxes.MouseX)
         {
-            // Horizontal only - player body turns
+            // Rotate the player body left and right
             transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityHor, 0);
         }
         else if (axes == RotationAxes.MouseY)
         {
-            // Vertical only - camera tilts
+            // Tilt the camera up and down, clamped to prevent flipping
             verticalRot -= Input.GetAxis("Mouse Y") * sensitivityVert;
             verticalRot = Mathf.Clamp(verticalRot, minimumVert, maximumVert);
             transform.localEulerAngles = new Vector3(verticalRot, 0, 0);

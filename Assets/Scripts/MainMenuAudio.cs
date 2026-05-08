@@ -8,13 +8,13 @@ public class MainMenuAudio : MonoBehaviour
     public float volume = 0.5f;
     public float fadeInDuration = 2f;
     public float fadeOutDuration = 1.5f;
-    
+
     private AudioSource audioSource;
     private static MainMenuAudio instance;
-    
+
     void Awake()
     {
-        // Singleton pattern to keep music playing during scene transitions
+        // Keep this object alive when loading the game scene, then destroy it after fade out
         if (instance == null)
         {
             instance = this;
@@ -26,22 +26,19 @@ public class MainMenuAudio : MonoBehaviour
             return;
         }
     }
-    
+
     void Start()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = menuMusic;
         audioSource.loop = true;
-        audioSource.volume = 0f; // Start at 0 for fade in
+        audioSource.volume = 0f;
         audioSource.Play();
-        
-        // Start fade in
+
         StartCoroutine(FadeInMusic());
-        
-        // Listen for scene changes
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
-    
+
     IEnumerator FadeInMusic()
     {
         float elapsed = 0;
@@ -53,12 +50,12 @@ public class MainMenuAudio : MonoBehaviour
         }
         audioSource.volume = volume;
     }
-    
+
     public IEnumerator FadeOutMusic()
     {
         float elapsed = 0;
         float startVolume = audioSource.volume;
-        
+
         while (elapsed < fadeOutDuration)
         {
             elapsed += Time.deltaTime;
@@ -68,25 +65,21 @@ public class MainMenuAudio : MonoBehaviour
         audioSource.volume = 0;
         audioSource.Stop();
     }
-    
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // If we're no longer in the main menu, fade out and destroy
         if (scene.name != "MainMenu")
-        {
             StartCoroutine(FadeOutAndDestroy());
-        }
     }
-    
+
     IEnumerator FadeOutAndDestroy()
     {
         yield return StartCoroutine(FadeOutMusic());
         Destroy(gameObject);
     }
-    
+
     void OnDestroy()
     {
-        // Clean up the event listener
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

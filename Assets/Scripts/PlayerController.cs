@@ -19,10 +19,21 @@ public class PlayerController : MonoBehaviour
     }
 
     void Update()
-
-    
     {
-        // Right click to aim
+        HandleAiming();
+        HandleMovement();
+        HandleAnimations();
+
+        // Allow cursor unlock during play for debugging
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
+    void HandleAiming()
+    {
         if (Input.GetMouseButtonDown(1))
         {
             isAiming = true;
@@ -33,16 +44,18 @@ public class PlayerController : MonoBehaviour
             isAiming = false;
             if (animator != null) animator.SetBool("Aiming", false);
         }
+    }
 
-        // Gravity and Jump
+    void HandleMovement()
+    {
+        // Apply gravity, allow jumping when grounded
         if (charController.isGrounded)
         {
             verticalVelocity = -1f;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 verticalVelocity = jumpForce;
-                if (animator != null)
-                    animator.SetTrigger("Roll");
+                if (animator != null) animator.SetTrigger("Roll");
             }
         }
         else
@@ -50,7 +63,6 @@ public class PlayerController : MonoBehaviour
             verticalVelocity -= 20f * Time.deltaTime;
         }
 
-        // Movement - as taught in slides
         float deltaX = Input.GetAxis("Horizontal") * speed;
         float deltaZ = Input.GetAxis("Vertical") * speed;
 
@@ -60,24 +72,19 @@ public class PlayerController : MonoBehaviour
         movement *= Time.deltaTime;
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
+    }
 
-        // Directional animation parameters
+    void HandleAnimations()
+    {
         float inputX = Input.GetAxis("Horizontal");
         float inputZ = Input.GetAxis("Vertical");
-        float currentSpeed = new Vector3(deltaX, 0, deltaZ).magnitude;
+        float currentSpeed = new Vector3(inputX, 0, inputZ).magnitude * speed;
 
         if (animator != null)
         {
             animator.SetFloat("Speed", currentSpeed);
             animator.SetFloat("X", inputX);
             animator.SetFloat("Y", inputZ);
-        }
-
-        // Escape to unlock cursor
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
     }
 }

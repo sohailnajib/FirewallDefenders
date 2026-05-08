@@ -13,7 +13,7 @@ public class EnemyHealthBar : MonoBehaviour
 
     void Update()
     {
-        // Always face the camera - billboard effect
+        // Keep the health bar facing the camera at all times
         transform.LookAt(transform.position + cam.forward);
     }
 

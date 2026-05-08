@@ -14,7 +14,6 @@ public class BugEnemy : MonoBehaviour
     private bool isDead = false;
     private bool hasAttacked = false;
 
-    // State machine - as taught in slides
     private enum State { Walking, Attacking, Dead }
     private State currentState = State.Walking;
 
@@ -49,26 +48,23 @@ public class BugEnemy : MonoBehaviour
 
     void MoveTowardFirewall()
     {
+        // Keep Y position fixed so the bug doesn't float or sink
         Vector3 targetPos = new Vector3(firewall.position.x,
             transform.position.y, firewall.position.z);
 
         transform.LookAt(targetPos);
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetPos,
-            speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
 
         if (animator != null)
             animator.SetBool("Walk", true);
 
-        float distanceToFirewall = Vector3.Distance(
-            transform.position, targetPos);
-        if (distanceToFirewall < 2f)
+        if (Vector3.Distance(transform.position, targetPos) < 2f)
             currentState = State.Attacking;
     }
 
     void AttackFirewall()
     {
+        // Only attack once per bug
         if (hasAttacked) return;
         hasAttacked = true;
 
@@ -78,12 +74,10 @@ public class BugEnemy : MonoBehaviour
             animator.SetTrigger("Attack");
         }
 
-        // Damage firewall
         FirewallHealth fw = firewall.GetComponent<FirewallHealth>();
         if (fw != null)
             fw.TakeDamage(damage);
 
-        // Wait for attack animation then die
         StartCoroutine(DieAfterAttack());
     }
 
@@ -110,7 +104,6 @@ public class BugEnemy : MonoBehaviour
                 GameManager.instance.AddScore(10);
             Die();
         }
-            
     }
 
     void Die()
@@ -124,8 +117,6 @@ public class BugEnemy : MonoBehaviour
 
         if (animator != null)
             animator.SetBool("Death", true);
-
-
 
         Destroy(gameObject, 2f);
     }
