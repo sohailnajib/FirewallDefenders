@@ -77,11 +77,6 @@ public class GameOverGlitch : MonoBehaviour
 
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
-
-        if (restartButton != null)
-            restartButton.onClick.AddListener(RestartGame);
-        if (exitButton != null)
-            exitButton.onClick.AddListener(ExitGame);
     }
 
     void HideButtons()
@@ -290,24 +285,5 @@ public class GameOverGlitch : MonoBehaviour
         }
 
         button.transform.localScale = originalScale;
-    }
-
-    void RestartGame()
-    {
-        Time.timeScale = 1f;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
-        );
-    }
-
-    void ExitGame()
-    {
-        Time.timeScale = 1f;
-
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-        #else
-        Application.Quit();
-        #endif
     }
 }
